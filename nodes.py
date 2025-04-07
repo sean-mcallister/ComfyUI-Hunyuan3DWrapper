@@ -137,7 +137,6 @@ class Hy3DModelLoader:
         offload_device=mm.unet_offload_device()
 
         model_path = folder_paths.get_full_path("diffusion_models", model)
-        log.info(f"Loading model from {model_path}")
         pipe, vae = Hunyuan3DDiTFlowMatchingPipeline.from_single_file(
             ckpt_path=model_path,
             use_safetensors=True,
