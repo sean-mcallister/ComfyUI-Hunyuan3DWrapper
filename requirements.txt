@@ -7,7 +7,12 @@ opencv-python
 transformers
 xatlas
 pymeshlab
-pygltflib
+dataclasses-json
+pygltflib==1.16.2
 scikit-learn
 scikit-image
 pybind11
+#for quad remeshing node
+pynanoinstantmeshes
+#for fast decimation node
+pyfqmr
