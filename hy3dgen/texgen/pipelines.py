@@ -26,6 +26,7 @@
 import logging
 import os
 
+import folder_paths
 import numpy as np
 import torch
 from PIL import Image
@@ -59,7 +60,9 @@ class Hunyuan3DPaintPipeline:
     @classmethod
     def from_pretrained(cls, model_path):
         # try local path
-        base_dir = "checkpoints"
+        base_dir = os.environ.get("HY3DGEN_MODELS", None)
+        if base_dir is None:
+            base_dir = "checkpoints"
 
         delight_model_path = os.path.join(base_dir, 'hunyuan3d-delight-v2-0')
         multiview_model_path = os.path.join(base_dir, 'hunyuan3d-paint-v2-0')
@@ -67,6 +70,7 @@ class Hunyuan3DPaintPipeline:
         if not os.path.exists(delight_model_path) or not os.path.exists(multiview_model_path):
             try:
                 import huggingface_hub
+
                 # download from huggingface
                 huggingface_hub.snapshot_download(
                     repo_id="tencent/Hunyuan3D-2",

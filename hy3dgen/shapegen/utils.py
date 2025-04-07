@@ -16,6 +16,7 @@ import logging
 import os
 from functools import wraps
 
+import folder_paths
 import torch
 
 
@@ -94,26 +95,10 @@ def smart_load_model(
 ):
     original_model_path = model_path
     # try local path
-    base_dir = os.environ.get('HY3DGEN_MODELS', '~/.cache/hy3dgen')
-    model_path = os.path.expanduser(os.path.join(base_dir, model_path, subfolder))
+    model_path = folder_paths.get_full_path("diffusers", os.path.join("Hunyuan3D-2", model_path, subfolder))
     logger.info(f'Try to load model from local path: {model_path}')
     if not os.path.exists(model_path):
-        logger.info('Model path not exists, try to download from huggingface')
-        try:
-            import huggingface_hub
-            # download from huggingface
-            path = huggingface_hub.snapshot_download(repo_id=original_model_path)
-            model_path = os.path.join(path, subfolder)
-        except ImportError:
-            logger.warning(
-                "You need to install HuggingFace Hub to load models from the hub."
-            )
-            raise RuntimeError(f"Model path {model_path} not found")
-        except Exception as e:
-            raise e
-
-    if not os.path.exists(model_path):
-        raise FileNotFoundError(f"Model path {original_model_path} not found")
+        raise RuntimeError(f"Model path {model_path} not found. Original path: {original_model_path}")
 
     extension = 'ckpt' if not use_safetensors else 'safetensors'
     variant = '' if variant is None else f'.{variant}'
